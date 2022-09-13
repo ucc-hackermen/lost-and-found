@@ -25,7 +25,8 @@ const CustomDrawer = (props) => {
           <Text style={styles.subtext}>jd@ucc.edu.gh</Text>
         </View>
         <View style={styles.navCon}>
-          <DrawerItem
+          <DrawerItemList {...props} />
+          {/* <DrawerItem
             style={styles.drawerItem}
             label="Home"
             labelStyle={{ fontSize: 16 }}
@@ -40,7 +41,7 @@ const CustomDrawer = (props) => {
             onPress={() => {
               props.navigation.navigate("About");
             }}
-          />
+          /> */}
           <DrawerItem
             style={styles.drawerItem}
             label="Log Out"

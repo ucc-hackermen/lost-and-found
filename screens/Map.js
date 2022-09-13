@@ -266,7 +266,7 @@ export default function Map({ navigation }) {
           }}
         >
           <TouchableOpacity
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => navigation.navigate("Dashboard")}
             style={{
               padding: 5,
               backgroundColor: "#edf6f9",

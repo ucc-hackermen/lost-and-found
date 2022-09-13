@@ -17,7 +17,7 @@ const StackNav = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Dashboard" component={Home} />
       <Stack.Screen name="Create" component={Create} />
       <Stack.Screen name="Camera" component={Camera_} />
       <Stack.Screen name="Items" component={Items} />

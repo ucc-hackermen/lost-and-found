@@ -48,16 +48,16 @@ function App() {
     return loggedIn ? (
       <NavigationContainer>
         <Drawer.Navigator
-          initialRouteName="NavHome"
+          initialRouteName="Home"
           drawerContent={(props) => <CustomDrawer {...props} />}
         >
           <Drawer.Screen
-            name="NavHome"
+            name="Home"
             component={StackNav}
             options={{ headerShown: false }}
           />
           <Drawer.Screen
-            name="About"
+            name="About Us"
             component={AboutUs}
             options={{ headerShown: false }}
           />
