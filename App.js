@@ -1,6 +1,8 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import LogIn from "./screens/LogIn";
 import {
   useFonts,
   Inter_100Thin,
@@ -15,13 +17,17 @@ import {
 } from "@expo-google-fonts/inter";
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
+import CustomDrawer from "./components/CustomDrawer";
 import Home from "./screens/Home";
 import Camera_ from "./screens/Camera";
 import Create from "./screens/Create";
 import Items from "./screens/Items";
 import Map from "./screens/Map";
 import { AppLoading } from "./AppLoading";
+import StackNav from "./components/StackNav";
+import AboutUs from "./screens/AboutUs";
 
 function App() {
   let [fontsLoaded] = useFonts({
@@ -35,24 +41,30 @@ function App() {
     Inter_800ExtraBold,
     Inter_900Black,
   });
-
+  const loggedIn = true;
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
-    return (
+    return loggedIn ? (
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
+        <Drawer.Navigator
+          initialRouteName="NavHome"
+          drawerContent={(props) => <CustomDrawer {...props} />}
         >
-          <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="Create" component={Create} />
-          <Stack.Screen name="Camera" component={Camera_} />
-          <Stack.Screen name="Items" component={Items} />
-          <Stack.Screen name="Map" component={Map} />
-        </Stack.Navigator>
+          <Drawer.Screen
+            name="NavHome"
+            component={StackNav}
+            options={{ headerShown: false }}
+          />
+          <Drawer.Screen
+            name="About"
+            component={AboutUs}
+            options={{ headerShown: false }}
+          />
+        </Drawer.Navigator>
       </NavigationContainer>
+    ) : (
+      <LogIn />
     );
   }
 }
