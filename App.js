@@ -27,6 +27,41 @@ import AboutUs from "./screens/AboutUs";
 import { UserContext } from "./context";
 
 function App() {
+  const [loggedIn, setloggedIn] = useState(false);
+  const { userContext, setUserContext } = useContext(UserContext);
+
+  useEffect(() => {
+    if (userContext) {
+      setloggedIn(true);
+    }
+  }, [userContext]);
+
+  return loggedIn ? (
+    <NavigationContainer>
+      <Drawer.Navigator
+        initialRouteName="Home"
+        drawerContent={(props) => <CustomDrawer {...props} />}
+      >
+        <Drawer.Screen
+          name="Home"
+          component={StackNav}
+          options={{ headerShown: false }}
+        />
+        <Drawer.Screen
+          name="About Us"
+          component={AboutUs}
+          options={{ headerShown: false }}
+        />
+      </Drawer.Navigator>
+    </NavigationContainer>
+  ) : (
+    <LogIn />
+  );
+}
+
+export default () => {
+  const [userContext, setuserContext] = useState({});
+
   let [fontsLoaded] = useFonts({
     Inter_100Thin,
     Inter_200ExtraLight,
@@ -38,39 +73,16 @@ function App() {
     Inter_800ExtraBold,
     Inter_900Black,
   });
-  const loggedIn = false;
+
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
-    return loggedIn ? (
-      <NavigationContainer>
-        <Drawer.Navigator
-          initialRouteName="Home"
-          drawerContent={(props) => <CustomDrawer {...props} />}
-        >
-          <Drawer.Screen
-            name="Home"
-            component={StackNav}
-            options={{ headerShown: false }}
-          />
-          <Drawer.Screen
-            name="About Us"
-            component={AboutUs}
-            options={{ headerShown: false }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    ) : (
-      <LogIn />
+    return (
+      <UserContext.Provider value={{ userContext, setuserContext }}>
+        <App />
+      </UserContext.Provider>
     );
   }
-}
-
-export default () => {
-  const [userContext, setuserContext] = useState({});
-  return (
-    <UserContext.Provider value={{ userContext, setuserContext }}>
-      <App />
-    </UserContext.Provider>
-  );
 };
+
+// export default App;

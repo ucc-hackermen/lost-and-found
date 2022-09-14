@@ -1,30 +1,43 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, ImageBackground, Image } from "react-native";
-//https://github.com/Gapur/react-native-image-avatar-picker
+import { StyleSheet, View, Text } from "react-native";
 export const AppLoading = ({ navigation }) => {
   return (
-    <ImageBackground
+    <View
       //   source={require("../assets/sbg.jpg")}
       style={styles.container}
     >
       <StatusBar style="light" />
-      {/* <Image style={styles.image} source={require("../assets/ja.gif")} /> */}
-    </ImageBackground>
+      <Text
+        style={{
+          fontSize: 40,
+          fontFamily: "Inter_700Bold",
+          lineHeight: 40,
+        }}
+      >
+        {`Lost`}
+        <Text style={{ color: "#ff0a54" }}>&</Text>
+      </Text>
+      <Text
+        style={{
+          color: "#000",
+          fontSize: 40,
+          fontFamily: "Inter_700Bold",
+          lineHeight: 40,
+        }}
+      >
+        {`Found`}
+      </Text>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0052fe",
+    backgroundColor: "#fff",
     paddingHorizontal: 16,
     alignItems: "center",
     justifyContent: "center",
-  },
-  image: {
-    width: 450,
-    height: 450,
-    marginTop: -70,
   },
 });
