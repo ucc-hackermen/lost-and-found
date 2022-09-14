@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -19,15 +19,12 @@ import {
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
-import CustomDrawer from "./components/CustomDrawer";
-import Home from "./screens/Home";
-import Camera_ from "./screens/Camera";
-import Create from "./screens/Create";
-import Items from "./screens/Items";
-import Map from "./screens/Map";
+import CustomDrawer from "./navigation/CustomDrawer";
 import { AppLoading } from "./AppLoading";
-import StackNav from "./components/StackNav";
+import StackNav from "./navigation/StackNav";
 import AboutUs from "./screens/AboutUs";
+
+import { UserContext } from "./context";
 
 function App() {
   let [fontsLoaded] = useFonts({
@@ -41,7 +38,7 @@ function App() {
     Inter_800ExtraBold,
     Inter_900Black,
   });
-  const loggedIn = true;
+  const loggedIn = false;
   if (!fontsLoaded) {
     return <AppLoading />;
   } else {
@@ -69,4 +66,11 @@ function App() {
   }
 }
 
-export default App;
+export default () => {
+  const [userContext, setuserContext] = useState({});
+  return (
+    <UserContext.Provider value={{ userContext, setuserContext }}>
+      <App />
+    </UserContext.Provider>
+  );
+};

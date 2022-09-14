@@ -1,26 +1,106 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 
 const LogIn = () => {
   const login = () => {
     console.log("login");
   };
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.btn} onPress={login}>
-        <View style={styles.ggcon}>
-          <Image
-            source={require("../assets/gg.png")}
+    <ImageBackground
+      source={require("../assets/bg.png")}
+      style={styles.container}
+    >
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={[
+          "#fff",
+          "#fff",
+          "rgba(255,255,255,0.8)",
+          "rgba(255,255,255,0.5)",
+          "rgba(255,255,255,0.3)",
+          "transparent",
+          "rgba(255,255,255,0.5)",
+          "#fff",
+        ]}
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          paddingVertical: 50,
+          paddingHorizontal: 20,
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
             style={{
-              width: 24,
-              height: 24,
+              fontSize: 40,
+              fontFamily: "Inter_700Bold",
+              lineHeight: 40,
             }}
-            resizeMode="cover"
-          />
+          >
+            {`Lost`}
+            <Text style={{ color: "#ff0a54" }}>&</Text>
+          </Text>
+          <Text
+            style={{
+              color: "#000",
+              fontSize: 40,
+              fontFamily: "Inter_700Bold",
+              lineHeight: 40,
+            }}
+          >
+            {`Found`}
+          </Text>
+
+          <View
+            style={{
+              width: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 22,
+                fontFamily: "Inter_600SemiBold",
+                marginTop: 40,
+                marginBottom: 10,
+                color: "#000",
+              }}
+            >
+              {`Something's missing?`}
+            </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: "Inter_400Regular",
+                textAlign: "center",
+                color: "#5e6472",
+              }}
+            >
+              {`Ask help from people to help \nyou find it`}
+            </Text>
+          </View>
         </View>
-        <Text style={styles.text}>Login with your institutional email</Text>
-      </TouchableOpacity>
-    </View>
+        <LogIn />
+      </LinearGradient>
+    </ImageBackground>
   );
 };
 
@@ -32,23 +112,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-  },
-  ggcon: {
-    padding: 2,
-    backgroundColor: "#fff",
-    borderRadius: 5,
-    marginRight: 8,
-  },
-  btn: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#4586f4",
-    padding: 8,
-    borderRadius: 5,
-  },
-  text: {
-    color: "#fff",
   },
 });
