@@ -9,10 +9,13 @@ import {
   Image,
   Modal,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { useRef, useMemo, useState, useEffect } from "react";
 import { BlurView } from "expo-blur";
+import Input from "../components/Input";
+import * as Location from "expo-location";
 
 const { width, height } = Dimensions.get("screen");
 export default function Create({ navigation, route }) {
@@ -21,9 +24,94 @@ export default function Create({ navigation, route }) {
   const [currentPage, setcurrentPage] = useState("lost"); // page
   const [item, setitem] = useState(null);
 
+  const [title, settitle] = useState("");
+  const [description, setdescription] = useState("");
+  const [location, setlocation] = useState("");
+  const [status, setstatus] = useState(type);
+  const [photo, setphoto] = useState(
+    "https://tgtsafrica.com/wp-content/uploads/2020/11/placeholder-640x427.png"
+  );
+  const [user, setuser] = useState("dSUAnuhIbH2XOld4n6vpzg");
+
+  const [loading, setloading] = useState(false);
+
+  const [location2, setLocation2] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation2(location);
+      console.log(">>>>> ", location);
+    })();
+  }, []);
+
   useEffect(() => {
     setcurrentPage(type);
   }, []);
+
+  const mytime = Date.now();
+
+  const handleUpload = async () => {
+    if (title && location && description) {
+      setloading(true);
+      const response = await fetch(
+        "https://ucc-lost-and-found.herokuapp.com/adverts",
+        {
+          method: "POST",
+          mode: "cors",
+          cache: "no-cache",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: title,
+            user: user,
+            description: description,
+            location: location,
+            photo: photo,
+            status: status,
+            coords: {
+              lat: location2?.coords?.latitude,
+              lng: location2?.coords?.longitude,
+            },
+            timestamp: mytime,
+          }),
+        }
+      );
+
+      if (response.status == 422) {
+        setloading(false);
+        alert("Sorry an error occured, Please try again");
+      }
+      return response
+        .json()
+        .then((data) => {
+          if (data.data.success) {
+            setloading(false);
+            console.log(data); // JSON data parsed by `data.json()` call
+            alert("Success, Your item has been posted");
+            navigation.navigate("Items");
+          } else {
+            setloading(false);
+            alert("Sorry an error occured, Please try again");
+          }
+        })
+        .catch((e) => {
+          setloading(false);
+          alert("Sorry an error occured, Please try again");
+          console.log(e);
+        });
+    } else {
+      alert("Please fill all fields");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -38,7 +126,7 @@ export default function Create({ navigation, route }) {
         }}
       >
         <TouchableOpacity
-          onPress={() => navigation.navigate("Dashboard")}
+          onPress={() => navigation.goBack()}
           style={{
             padding: 5,
             backgroundColor: "#edf6f9",
@@ -129,118 +217,30 @@ export default function Create({ navigation, route }) {
             }}
           />
         ) : null}
-        <View
-          style={{
-            marginTop: 20,
+        <Input
+          title={"Title"}
+          placeholder={"Enter a title"}
+          onChange={(txt) => {
+            settitle(txt);
           }}
-        >
-          <Text
-            style={{
-              fontSize: 14,
-              fontFamily: "Inter_700Bold",
-              marginBottom: 5,
-            }}
-          >
-            Title
-          </Text>
-          <TextInput
-            style={{
-              width: "100%",
-              height: 60,
-              paddingHorizontal: 15,
-              borderRadius: 15,
-              backgroundColor: "#edf6f9",
-              fontSize: 14,
-              fontFamily: "Inter_500Medium",
-            }}
-            placeholder="Enter a title"
-          />
-        </View>
-        <View
-          style={{
-            marginTop: 20,
+        />
+        <Input
+          title={"Description"}
+          placeholder={"Enter a description"}
+          onChange={(txt) => {
+            setdescription(txt);
           }}
-        >
-          <Text
-            style={{
-              fontSize: 14,
-              fontFamily: "Inter_700Bold",
-              marginBottom: 5,
-            }}
-          >
-            Description
-          </Text>
-          <TextInput
-            style={{
-              width: "100%",
-              height: 60,
-              paddingHorizontal: 15,
-              borderRadius: 15,
-              backgroundColor: "#edf6f9",
-              fontSize: 14,
-              fontFamily: "Inter_500Medium",
-            }}
-            placeholder="Enter a title"
-          />
-        </View>
-        <View
-          style={{
-            marginTop: 20,
+        />
+        <Input
+          title={"Location"}
+          placeholder={"Enter a location"}
+          onChange={(txt) => {
+            setlocation(txt);
           }}
-        >
-          <Text
-            style={{
-              fontSize: 14,
-              fontFamily: "Inter_700Bold",
-              marginBottom: 5,
-            }}
-          >
-            Location
-          </Text>
-          <TextInput
-            style={{
-              width: "100%",
-              height: 60,
-              paddingHorizontal: 15,
-              borderRadius: 15,
-              backgroundColor: "#edf6f9",
-              fontSize: 14,
-              fontFamily: "Inter_500Medium",
-            }}
-            placeholder="Enter a title"
-          />
-        </View>
+        />
       </ScrollView>
       <TouchableOpacity
-        onPress={async () => {
-          try {
-            const result = await Share.share({
-              message:
-                "Help me find this lost item. I lost a " +
-                " " +
-                item.title +
-                " " +
-                "in the " +
-                " " +
-                item.location +
-                " " +
-                "on " +
-                " " +
-                item.date,
-            });
-            if (result.action === Share.sharedAction) {
-              if (result.activityType) {
-                // shared with activity type of result.activityType
-              } else {
-                // shared
-              }
-            } else if (result.action === Share.dismissedAction) {
-              // dismissed
-            }
-          } catch (error) {
-            alert(error.message);
-          }
-        }}
+        onPress={handleUpload}
         style={{
           width: width,
           backgroundColor: "#73d2de",
@@ -251,15 +251,19 @@ export default function Create({ navigation, route }) {
           marginLeft: -16,
         }}
       >
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: "Inter_700Bold",
-            color: "#fff",
-          }}
-        >
-          Post
-        </Text>
+        {loading ? (
+          <ActivityIndicator color="white" size={30} />
+        ) : (
+          <Text
+            style={{
+              fontSize: 14,
+              fontFamily: "Inter_700Bold",
+              color: "#fff",
+            }}
+          >
+            Post
+          </Text>
+        )}
       </TouchableOpacity>
 
       <Modal animationType="fade" transparent={true} visible={modal}>

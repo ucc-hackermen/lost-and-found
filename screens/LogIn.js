@@ -5,15 +5,28 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
+import LoginBtn from "../components/LoginBtn";
+
+import { UserContext } from "../context";
 
 const LogIn = () => {
+  const { userContext, setuserContext } = useContext(UserContext);
+
+  const [loading, setloading] = React.useState(false);
+
   const login = () => {
-    console.log("login");
+    setloading(true);
+    setTimeout(() => {
+      setuserContext(true);
+      setloading(false);
+    }, 1000);
   };
+
   return (
     <ImageBackground
       source={require("../assets/bg.png")}
@@ -98,7 +111,8 @@ const LogIn = () => {
             </Text>
           </View>
         </View>
-        <LogIn />
+
+        <LoginBtn onPress={login} loading={loading} />
       </LinearGradient>
     </ImageBackground>
   );

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { StatusBar } from "expo-status-bar";
 import MapView from "react-native-maps";
 import {
   ScrollView,
@@ -18,6 +19,7 @@ import * as Location from "expo-location";
 import { useRef, useMemo, useState, useEffect } from "react";
 import { BlurView } from "expo-blur";
 import { Marker } from "react-native-maps";
+import Nav from "../components/Nav";
 
 const { width, height } = Dimensions.get("screen");
 export default function Map({ navigation }) {
@@ -27,6 +29,23 @@ export default function Map({ navigation }) {
   const [currentPage, setcurrentPage] = useState("lost"); // page
   const [modal, setmodal] = useState(false);
   const [item, setitem] = useState(null);
+
+  const [founditems, setfounditems] = useState([]);
+
+  useEffect(() => {
+    const handleFetch = async () => {
+      await fetch("https://ucc-lost-and-found.herokuapp.com/adverts")
+        .then((data) => {
+          return data.json();
+        })
+        .then((items) => {
+          console.log(">>>", items);
+          setfounditems(items.data);
+        });
+    };
+
+    handleFetch();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -245,6 +264,7 @@ export default function Map({ navigation }) {
   ];
   return (
     <View style={styles.container}>
+      <StatusBar style="light" />
       <View
         style={{
           width: width,
@@ -256,60 +276,7 @@ export default function Map({ navigation }) {
           left: 0,
         }}
       >
-        <View
-          style={{
-            width: "100%",
-            borderRadius: 15,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Dashboard")}
-            style={{
-              padding: 5,
-              backgroundColor: "#edf6f9",
-              borderRadius: 15,
-            }}
-          >
-            <Feather name="chevron-left" size={30} color="#000" />
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={{
-              padding: 5,
-              borderRadius: 15,
-            }}
-          >
-            <Feather name="chevron-left" size={30} color="#fff" />
-          </TouchableOpacity>
-        </View>
-
-        <View
-          style={{
-            width: "100%",
-            backgroundColor: "#edf6f9",
-            borderRadius: 15,
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 20,
-            height: 45,
-            marginTop: 15,
-          }}
-        >
-          <Feather name="search" size={24} color="#73d2de" />
-          <TextInput
-            placeholder="Search for your lost items"
-            style={{
-              width: "100%",
-              marginLeft: 10,
-              fontSize: 14,
-              fontFamily: "Inter_500Medium",
-            }}
-          />
-          {/* Two column list of cards */}
-        </View>
+        <Nav navigation={navigation} />
       </View>
       <MapView
         style={styles.map}
@@ -321,12 +288,12 @@ export default function Map({ navigation }) {
           longitudeDelta: 0.005,
         }}
       >
-        {markerdata.map((marker, index) => (
+        {founditems.map((marker, index) => (
           <Marker
             key={index}
             coordinate={{
-              latitude: marker.lat,
-              longitude: marker.lng,
+              latitude: marker.coords.lat,
+              longitude: marker.coords.lng,
             }}
             onPress={() => {
               setitem(marker);

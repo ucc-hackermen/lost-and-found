@@ -11,7 +11,7 @@ export const AppLoading = ({ navigation }) => {
       <Text
         style={{
           fontSize: 40,
-          fontFamily: "Inter_700Bold",
+          // fontFamily: "Inter_700Bold",
           lineHeight: 40,
         }}
       >
@@ -22,7 +22,7 @@ export const AppLoading = ({ navigation }) => {
         style={{
           color: "#000",
           fontSize: 40,
-          fontFamily: "Inter_700Bold",
+          // fontFamily: "Inter_700Bold",
           lineHeight: 40,
         }}
       >

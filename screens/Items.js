@@ -13,13 +13,44 @@ import {
   Share,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { BlurView } from "expo-blur";
+import ItemCard from "../components/ItemCard";
+import * as Location from "expo-location";
 
 export default function Items({ navigation }) {
   const [currentPage, setcurrentPage] = useState("lost"); // page
   const [modal, setmodal] = useState(false);
   const [item, setitem] = useState(null);
+  const [query, setquery] = useState("");
+
+  const [lostitems, setlostitems] = useState([]);
+  const [founditems, setfounditems] = useState([]);
+
+  useEffect(() => {
+    const handleFetch = async () => {
+      await fetch("https://ucc-lost-and-found.herokuapp.com/adverts")
+        .then((data) => {
+          return data.json();
+        })
+        .then((items) => {
+          console.log(items);
+          items.data.map((item) => {
+            if (item.status == "lost") {
+              let temparr = [];
+              temparr.push(item);
+              setlostitems(temparr);
+            } else {
+              let temparr = [];
+              temparr.push(item);
+              setfounditems(temparr);
+            }
+          });
+        });
+    };
+
+    handleFetch();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -31,10 +62,11 @@ export default function Items({ navigation }) {
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
+          marginBottom: 20,
         }}
       >
         <TouchableOpacity
-          onPress={() => navigation.navigate("Dashboard")}
+          onPress={() => navigation.goBack()}
           style={{
             padding: 5,
             backgroundColor: "#edf6f9",
@@ -53,6 +85,7 @@ export default function Items({ navigation }) {
           }}
         >
           <TouchableOpacity
+            onPress={() => setcurrentPage("lost")}
             style={{
               padding: 5,
               backgroundColor: currentPage == "lost" ? "#73d2de" : "#eee",
@@ -107,18 +140,7 @@ export default function Items({ navigation }) {
           <Feather name="chevron-left" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
-      <Text
-        style={{
-          width: "100%",
-          textAlign: "center",
-          marginBottom: 20,
-          marginTop: 2,
-          fontSize: 14,
-          fontFamily: "Inter_100Thin",
-        }}
-      >
-        items
-      </Text>
+
       <View
         style={{
           width: "100%",
@@ -139,6 +161,9 @@ export default function Items({ navigation }) {
             fontSize: 14,
             fontFamily: "Inter_500Medium",
           }}
+          onChangeText={(txt) => {
+            setquery(txt);
+          }}
         />
         {/* Two column list of cards */}
       </View>
@@ -151,129 +176,36 @@ export default function Items({ navigation }) {
         <FlatList
           horizontal={false}
           numColumns={2}
-          data={[
-            {
-              key: 1,
-              title: "Laptop",
-              image: require("../assets/laptop.jpg"),
-              description: "I lost my laptop in the library",
-              date: "12/12/2020",
-              location: "Library",
-              status: "lost",
-            },
-            {
-              key: 2,
-              title: "Laptop",
-              image: require("../assets/laptop.jpg"),
-              description: "I lost my laptop in the library",
-              date: "12/12/2020",
-              location: "Library",
-              status: "lost",
-            },
-          ]}
+          data={
+            currentPage == "lost"
+              ? lostitems.filter((item) => {
+                  return (
+                    item.title.toLowerCase().indexOf(query.toLowerCase()) !==
+                      -1 ||
+                    item.location.toLowerCase().indexOf(query.toLowerCase()) !==
+                      -1
+                  );
+                })
+              : founditems.filter((item) => {
+                  return (
+                    item.title.toLowerCase().indexOf(query.toLowerCase()) !==
+                      -1 ||
+                    item.location.toLowerCase().indexOf(query.toLowerCase()) !==
+                      -1
+                  );
+                })
+          }
           renderItem={({ item, index }) => (
-            <TouchableOpacity
+            <ItemCard
+              item={item}
+              index={index}
               onPress={() => {
                 setitem(item);
                 setmodal(true);
               }}
-              style={{
-                width: "48.5%",
-                backgroundColor: "#eee",
-                borderRadius: 15,
-                flexDirection: "column",
-                // alignItems: "center",
-                // height: 290,
-                marginRight: index == 0 || index % 2 !== 0 ? 10 : 0,
-              }}
-            >
-              <Image
-                source={item.image}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  borderRadius: 15,
-                }}
-              />
-              <View
-                style={{
-                  paddingHorizontal: 15,
-                  marginVertical: 7,
-                  marginBottom: 15,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontFamily: "Inter_700Bold",
-                    color: "#000",
-                  }}
-                >
-                  {item.title}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontFamily: "Inter_400Regular",
-                    color: "gray",
-                  }}
-                >
-                  {item.description}
-                </Text>
-                <TouchableOpacity
-                  onPress={async () => {
-                    try {
-                      const result = await Share.share({
-                        message:
-                          "Help me find this lost item. I lost a " +
-                          " " +
-                          item.title +
-                          " " +
-                          "in the " +
-                          " " +
-                          item.location +
-                          " " +
-                          "on " +
-                          " " +
-                          item.date,
-                      });
-                      if (result.action === Share.sharedAction) {
-                        if (result.activityType) {
-                          // shared with activity type of result.activityType
-                        } else {
-                          // shared
-                        }
-                      } else if (result.action === Share.dismissedAction) {
-                        // dismissed
-                      }
-                    } catch (error) {
-                      alert(error.message);
-                    }
-                  }}
-                  style={{
-                    width: "100%",
-                    backgroundColor: "#73d2de",
-                    borderRadius: 10,
-                    height: 40,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: 6,
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontFamily: "Inter_700Bold",
-                      color: "#fff",
-                    }}
-                  >
-                    Share
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
+            />
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.key}
         />
       </View>
 
@@ -304,7 +236,7 @@ export default function Items({ navigation }) {
               }}
             >
               <Image
-                source={item.image}
+                source={{ uri: item.photo }}
                 style={{
                   width: "100%",
                   height: 400,
@@ -382,7 +314,7 @@ export default function Items({ navigation }) {
                         marginLeft: 5,
                       }}
                     >
-                      {item.date}
+                      {new Date(item.timestamp).getUTCDate().toString()}
                     </Text>
                   </View>
                 </View>

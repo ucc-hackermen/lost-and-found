@@ -13,6 +13,7 @@ import {
 import { Feather } from "@expo/vector-icons";
 import { useRef, useMemo, useState } from "react";
 import { BlurView } from "expo-blur";
+import HomeNav from "../components/HomeNav";
 
 const { width, height } = Dimensions.get("screen");
 export default function Home({ navigation }) {
@@ -20,28 +21,7 @@ export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <View
-        style={{
-          width: "100%",
-          backgroundColor: "#edf6f9",
-          borderRadius: 15,
-          flexDirection: "row",
-          alignItems: "center",
-          paddingHorizontal: 20,
-          height: 45,
-        }}
-      >
-        <Feather name="search" size={24} color="#73d2de" />
-        <TextInput
-          placeholder="Search for your lost items"
-          style={{
-            width: "100%",
-            marginLeft: 10,
-            fontSize: 14,
-            fontFamily: "Inter_500Medium",
-          }}
-        />
-      </View>
+      <HomeNav navigation={navigation} />
       <Text
         style={{
           fontSize: 15,

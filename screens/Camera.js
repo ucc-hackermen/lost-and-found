@@ -15,10 +15,20 @@ import {
 } from "react-native";
 import { useRef, useMemo, useState } from "react";
 import { Feather } from "@expo/vector-icons";
+// import firebase from "firebase";
+
+import { getStorage, ref } from "firebase/storage";
 
 const { width, height } = Dimensions.get("screen");
 export default function Camera_({ navigation }) {
+  // const storage = getStorage();
+  // const spaceRef = ref(storage, "images/" + Math.random() * 100 + "sdsd.jpg");
+
   const [type, setType] = useState(CameraType.back);
+  const [file_, setfile_] = useState(null);
+  const [uploading, setuploading] = useState(null);
+  const [loadingimg, setloadingimg] = useState(false);
+  const [loading, setloading] = useState(false);
 
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
@@ -27,15 +37,62 @@ export default function Camera_({ navigation }) {
   Camera.requestMicrophonePermissionsAsync();
   Camera.requestCameraPermissionsAsync();
 
-  function toggleCameraType() {
-    setType((current) =>
-      current === CameraType.back ? CameraType.front : CameraType.back
-    );
-  }
+  // const handleUpload = async (file) => {
+  //   const response = await fetch(file);
+  //   const blob = await response.blob();
+
+  //   var uploadTask = firebase
+  //     .storage()
+  //     .ref()
+  //     .child("booksCover/" + Date.now() + ".jpg")
+  //     .put(blob);
+
+  //   uploadTask.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       console.log("Upload is " + progress + "% done");
+  //       setuploading(progress);
+  //       setloadingimg(true);
+  //       switch (snapshot.state) {
+  //         case firebase.storage.TaskState.PAUSED: // or 'paused'
+  //           console.log("Upload is paused");
+  //           break;
+  //         case firebase.storage.TaskState.RUNNING: // or 'running'
+  //           console.log("Upload is running");
+  //           break;
+  //       }
+  //     },
+  //     (error) => {
+  //       var errorCode = error.code;
+  //       var errorMessage = error.message;
+  //       console.log("Storage error");
+  //       alert(error.message);
+  //     },
+  //     () => {
+  //       uploadTask.snapshot.ref.getDownloadURL().then(async (downloadURL) => {
+  //         console.log("File available at", downloadURL);
+  //         setloadingimg(false);
+  //         if (downloadURL) {
+  //           navigation.navigate("Create", {
+  //             uri: downloadURL,
+  //             type: "found",
+  //           });
+  //         }
+  //       });
+  //     }
+  //   );
+  // };
 
   return (
     <View style={styles.container}>
-      <Camera flashMode={"torch"} ref={snap} style={styles.camera} type={type}>
+      <Camera
+        ratio="16:9"
+        flashMode={"torch"}
+        ref={snap}
+        style={styles.camera}
+        type={type}
+      >
         <View
           style={{
             width: "100%",
@@ -73,6 +130,7 @@ export default function Camera_({ navigation }) {
               </TouchableOpacity>
 
               <TouchableOpacity
+                onPress={() => navigation.navigate("Create", { type: "lost" })}
                 style={{
                   padding: 5,
                   borderRadius: 15,
@@ -97,12 +155,9 @@ export default function Camera_({ navigation }) {
           <TouchableOpacity
             onPress={async () => {
               let image = await snap.current.takePictureAsync();
-              if (image) {
-                navigation.navigate("Create", {
-                  uri: image.uri,
-                  type: "found",
-                });
-              }
+
+              // setfile_(image.uri)
+              // await handleUpload(image.uri);
             }}
             style={{
               width: 92,

@@ -1,29 +1,47 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 
-const LoginBtn = ({ onPress = () => {} }) => {
+const LoginBtn = ({ onPress = () => {}, loading = false }) => {
   const login = () => {
     console.log("login");
   };
 
   return (
     <TouchableOpacity style={styles.btn} onPress={onPress}>
-      <View style={styles.ggcon}>
-        <Image
-          source={require("../assets/gg.png")}
+      {loading ? (
+        <ActivityIndicator size={30} color="black" />
+      ) : (
+        <View
           style={{
-            width: 24,
-            height: 24,
+            flexDirection: "row",
+            alignItems: "center",
           }}
-          resizeMode="cover"
-        />
-      </View>
-      <Text style={styles.text}>Login with your institutional email</Text>
+        >
+          <View style={styles.ggcon}>
+            <Image
+              source={require("../assets/gg.png")}
+              style={{
+                width: 24,
+                height: 24,
+              }}
+              resizeMode="cover"
+            />
+          </View>
+          <Text style={styles.text}>Login with your institutional email</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
 
-export default LogIn;
+export default LoginBtn;
 
 const styles = StyleSheet.create({
   ggcon: {
