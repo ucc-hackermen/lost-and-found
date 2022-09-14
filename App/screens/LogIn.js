@@ -7,7 +7,7 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
 import LoginBtn from "../components/LoginBtn";
@@ -42,6 +42,7 @@ const LogIn = () => {
           "rgba(255,255,255,0.3)",
           "transparent",
           "rgba(255,255,255,0.5)",
+          "rgba(255,255,255,0.7)",
           "#fff",
         ]}
         style={{
@@ -112,7 +113,35 @@ const LogIn = () => {
           </View>
         </View>
 
-        <LoginBtn onPress={login} loading={loading} />
+        <View
+          style={{
+            width: "100%",
+          }}
+        >
+          <LoginBtn onPress={login} loading={loading} />
+          <TouchableOpacity
+            style={{
+              width: "100%",
+              height: 50,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onPress={() => {
+              setuserContext(true);
+            }}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                width: "100%",
+                fontFamily: "Inter_600SemiBold",
+                fontSize: 14,
+              }}
+            >
+              Continue as Guest
+            </Text>
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
     </ImageBackground>
   );

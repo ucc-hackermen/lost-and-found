@@ -29,6 +29,7 @@ export default function Map({ navigation }) {
   const [currentPage, setcurrentPage] = useState("lost"); // page
   const [modal, setmodal] = useState(false);
   const [item, setitem] = useState(null);
+  const [query, setquery] = useState("");
 
   const [founditems, setfounditems] = useState([]);
 
@@ -66,31 +67,6 @@ export default function Map({ navigation }) {
   } else if (location) {
     text = JSON.stringify(location);
   }
-
-  const markerdata = [
-    {
-      key: 1,
-      title: "Laptop",
-      image: require("../assets/laptop.jpg"),
-      description: "I lost my laptop in the library",
-      date: "12/12/2020",
-      location: "Library",
-      status: "lost",
-      lat: 5.10049,
-      lng: -1.28449,
-    },
-    {
-      key: 2,
-      title: "Laptop",
-      image: require("../assets/laptop.jpg"),
-      description: "I lost my laptop in the library",
-      date: "12/12/2020",
-      location: "Library",
-      status: "lost",
-      lat: 5.10464,
-      lng: -1.282491,
-    },
-  ];
 
   const MapStyle = [
     {
@@ -264,7 +240,7 @@ export default function Map({ navigation }) {
   ];
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       <View
         style={{
           width: width,
@@ -276,41 +252,53 @@ export default function Map({ navigation }) {
           left: 0,
         }}
       >
-        <Nav navigation={navigation} />
+        <Nav
+          navigation={navigation}
+          onChangeText={(txt) => {
+            setquery(txt);
+          }}
+        />
       </View>
       <MapView
         style={styles.map}
         customMapStyle={MapStyle}
         initialRegion={{
-          latitude: location ? location?.coords?.latitude : 5.10364,
-          longitude: location ? location?.coords?.longitude : -1.28249,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitude: founditems.length > 0 ? founditems[0].lat : 5.111123,
+          longitude: founditems.length > 0 ? founditems[0].lng : -1.2985844,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02,
         }}
       >
-        {founditems.map((marker, index) => (
-          <Marker
-            key={index}
-            coordinate={{
-              latitude: marker.coords.lat,
-              longitude: marker.coords.lng,
-            }}
-            onPress={() => {
-              setitem(marker);
-              setmodal(true);
-            }}
-          >
-            <TouchableOpacity>
-              <Image
-                source={require("../assets/order.png")}
-                style={{
-                  width: 50,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </Marker>
-        ))}
+        {founditems
+          .filter((item) => {
+            return (
+              item.title.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
+              item.location.toLowerCase().indexOf(query.toLowerCase()) !== -1
+            );
+          })
+          .map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.coords.lat,
+                longitude: marker.coords.lng,
+              }}
+              onPress={() => {
+                setitem(marker);
+                setmodal(true);
+              }}
+            >
+              <TouchableOpacity>
+                <Image
+                  source={require("../assets/order.png")}
+                  style={{
+                    width: 50,
+                    height: 50,
+                  }}
+                />
+              </TouchableOpacity>
+            </Marker>
+          ))}
       </MapView>
 
       {item ? (
@@ -340,7 +328,7 @@ export default function Map({ navigation }) {
               }}
             >
               <Image
-                source={item?.image}
+                source={{ uri: item?.photo }}
                 style={{
                   width: "100%",
                   height: 400,
@@ -418,7 +406,7 @@ export default function Map({ navigation }) {
                         marginLeft: 5,
                       }}
                     >
-                      {item?.date}
+                      {new Date(item.timestamp).toDateString()}
                     </Text>
                   </View>
                 </View>
@@ -437,7 +425,7 @@ export default function Map({ navigation }) {
                           " " +
                           "on " +
                           " " +
-                          item?.date,
+                          new Date(item.timestamp).toDateString(),
                       });
                       if (result.action === Share.sharedAction) {
                         if (result.activityType) {

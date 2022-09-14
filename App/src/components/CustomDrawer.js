@@ -21,7 +21,7 @@ const CustomDrawer = (props) => {
               resizeMode="cover"
             />
           </View>
-          <Text style={styles.text}>John Doe</Text>
+          <Text style={styles.text}>Joh Doe</Text>
           <Text style={styles.subtext}>jd@ucc.edu.gh</Text>
         </View>
         <View style={styles.navCon}>

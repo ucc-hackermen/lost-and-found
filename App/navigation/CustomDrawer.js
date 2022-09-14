@@ -1,5 +1,6 @@
 import { Button, Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { StatusBar } from "expo-status-bar";
+import React, { useContext } from "react";
 import {
   DrawerContentScrollView,
   DrawerItemList,
@@ -7,12 +8,17 @@ import {
 } from "@react-navigation/drawer";
 import { Dimensions } from "react-native";
 
+import { UserContext } from "../context";
+
 const CustomDrawer = (props) => {
   const windowWidth = Dimensions.get("window").width;
+
+  const { userContext, setuserContext } = useContext(UserContext);
 
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.container}>
+        <StatusBar style="light" />
         <View style={styles.upper}>
           <View>
             <Image
@@ -21,20 +27,20 @@ const CustomDrawer = (props) => {
               resizeMode="cover"
             />
           </View>
-          <Text style={styles.text}>John Doe</Text>
-          <Text style={styles.subtext}>jd@ucc.edu.gh</Text>
+          <Text style={styles.text}>Guest</Text>
+          {/* <Text style={styles.subtext}>jd@ucc.edu.gh</Text> */}
         </View>
         <View style={styles.navCon}>
-          <DrawerItemList {...props} />
-          {/* <DrawerItem
+          {/* <DrawerItemList {...props} /> */}
+          <DrawerItem
             style={styles.drawerItem}
             label="Home"
             labelStyle={{ fontSize: 16 }}
             onPress={() => {
-              props.navigation.navigate("NavHome");
+              props.navigation.navigate("Home");
             }}
           />
-          <DrawerItem
+          {/* <DrawerItem
             style={styles.drawerItem}
             label="About Us"
             labelStyle={{ fontSize: 16 }}
@@ -46,7 +52,9 @@ const CustomDrawer = (props) => {
             style={styles.drawerItem}
             label="Log Out"
             labelStyle={{ fontSize: 16 }}
-            onPress={() => {}}
+            onPress={() => {
+              setuserContext(false);
+            }}
           />
         </View>
       </View>

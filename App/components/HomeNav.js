@@ -26,7 +26,8 @@ export default HomeNav = ({ navigation }) => {
       }}
     >
       <TouchableOpacity
-        onPress={() => navigation.navigate("About Us")}
+        // onPress={() => navigation.navigate("About Us")}
+        onPress={() => navigation.openDrawer()}
         style={{
           padding: 5,
           backgroundColor: "#edf6f9",
@@ -39,7 +40,30 @@ export default HomeNav = ({ navigation }) => {
       >
         <Feather name="menu" size={25} color="#000" />
       </TouchableOpacity>
-      <Search />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Items", { type: "lost" })}
+        style={{
+          width: "85%",
+          backgroundColor: "#edf6f9",
+          borderRadius: 15,
+          flexDirection: "row",
+          alignItems: "center",
+          paddingHorizontal: 20,
+          height: 45,
+        }}
+      >
+        <Feather name="search" size={24} color="#73d2de" />
+        <Text
+          style={{
+            width: "100%",
+            marginLeft: 10,
+            fontSize: 14,
+            fontFamily: "Inter_500Medium",
+          }}
+        >
+          Search for your lost items
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };

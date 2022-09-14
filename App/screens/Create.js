@@ -53,6 +53,7 @@ export default function Create({ navigation, route }) {
 
   useEffect(() => {
     setcurrentPage(type);
+    setphoto(uri);
   }, []);
 
   const mytime = Date.now();
@@ -97,7 +98,7 @@ export default function Create({ navigation, route }) {
             setloading(false);
             console.log(data); // JSON data parsed by `data.json()` call
             alert("Success, Your item has been posted");
-            navigation.navigate("Items");
+            navigation.navigate("Items", { type: type });
           } else {
             setloading(false);
             alert("Sorry an error occured, Please try again");

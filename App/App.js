@@ -24,6 +24,9 @@ import AboutUs from "./screens/AboutUs";
 
 import { UserContext } from "./context";
 
+import { LogBox } from "react-native";
+LogBox.ignoreAllLogs(); //Ignore all log notifications
+
 function App() {
   const [loggedIn, setloggedIn] = useState(false);
   const { userContext, setUserContext } = useContext(UserContext);
@@ -31,6 +34,8 @@ function App() {
   useEffect(() => {
     if (userContext) {
       setloggedIn(true);
+    } else {
+      setloggedIn(false);
     }
   }, [userContext]);
 

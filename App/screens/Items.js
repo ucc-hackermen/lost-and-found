@@ -314,7 +314,7 @@ export default function Items({ navigation }) {
                         marginLeft: 5,
                       }}
                     >
-                      {new Date(item.timestamp).getUTCDate().toString()}
+                      {new Date(item.timestamp).toDateString()}
                     </Text>
                   </View>
                 </View>
@@ -333,7 +333,7 @@ export default function Items({ navigation }) {
                           " " +
                           "on " +
                           " " +
-                          item.date,
+                          new Date(item.timestamp).toDateString(),
                       });
                       if (result.action === Share.sharedAction) {
                         if (result.activityType) {

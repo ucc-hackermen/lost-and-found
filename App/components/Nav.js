@@ -13,7 +13,7 @@ import React from "react";
 import Search from "./Search";
 import { Feather } from "@expo/vector-icons";
 
-export default Nav = ({ navigation }) => {
+export default Nav = ({ navigation, onChangeText }) => {
   return (
     <View
       style={{
@@ -35,7 +35,7 @@ export default Nav = ({ navigation }) => {
       >
         <Feather name="chevron-left" size={30} color="#000" />
       </TouchableOpacity>
-      <Search />
+      <Search onChangeText={onChangeText} />
     </View>
   );
 };

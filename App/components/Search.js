@@ -12,7 +12,11 @@ import {
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 
-export default Search = ({ onPress = () => {}, loading = false }) => {
+export default Search = ({
+  onPress = () => {},
+  loading = false,
+  onChangeText,
+}) => {
   return (
     <View
       style={{
@@ -34,6 +38,8 @@ export default Search = ({ onPress = () => {}, loading = false }) => {
           fontSize: 14,
           fontFamily: "Inter_500Medium",
         }}
+        autoFocus={true}
+        onChangeText={onChangeText}
       />
     </View>
   );
